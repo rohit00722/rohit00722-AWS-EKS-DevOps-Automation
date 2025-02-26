@@ -1,0 +1,32 @@
+prometheus:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 9090
+  storage:
+    size: 10Gi
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+grafana:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 3000
+  adminUser: admin
+  adminPassword: admin123
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 250m
+      memory: 128Mi
+  persistence:
+    enabled: true
+    size: 5Gi

@@ -1,0 +1,120 @@
+# Jenkins + Kubernetes (EKS) CI/CD Pipeline Prerequisites
+
+## 1. AWS Setup
+
+### Create IAM Roles & Policies:
+- EKS Cluster Role (`AmazonEKSClusterPolicy`)
+- EKS Node Role (`AmazonEKSWorkerNodePolicy, AmazonEC2ContainerRegistryReadOnly`)
+- Jenkins EC2 Role (`AmazonEC2FullAccess, AmazonS3FullAccess, AmazonEKSFullAccess, AmazonECRFullAccess`)
+
+### Create AWS Services:
+- Amazon EKS Cluster with 2 Nodes (EC2 instances as worker nodes)
+- Amazon ECR Repository (To store Docker images)
+- Amazon EBS Volume (For persistent storage)
+
+### Networking & Security:
+- VPC & Subnets (EKS & EC2 must be in the same VPC)
+- Security Group Rules:
+  - EKS Nodes: Allow inbound from Jenkins EC2
+  - Jenkins EC2: Allow inbound on **port 8080** (Jenkins UI)
+  - SonarQube EC2: Allow inbound on **port 9000**
+
+---
+
+## 2. Jenkins Setup
+
+### Deploy Jenkins on a Dedicated EC2 Instance:
+- OS: Ubuntu 22.04 / Amazon Linux 2
+- Install Required Packages:
+  sudo apt update -y
+  sudo apt install -y openjdk-11-jdk git docker.io awscli kubectl
+
+### Install Jenkins:
+  wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+  sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+  sudo apt update -y
+  sudo apt install -y jenkins
+
+### Enable Jenkins & Start Service:
+  sudo systemctl enable jenkins
+  sudo systemctl start jenkins
+
+### Jenkins Plugins Required:
+- Pipeline
+- Docker Pipeline
+- Kubernetes CLI
+- Amazon EC2 Plugin
+- SonarQube Scanner Plugin
+
+### User Access:
+- Create Admin User in Jenkins
+- Configure GitHub Webhooks for automatic updates
+
+---
+
+## 3. Kubernetes (EKS) Setup
+
+### Install & Configure `kubectl` on Jenkins EC2:
+  curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.29.0/2024-01-05/bin/linux/amd64/kubectl
+  chmod +x ./kubectl
+  mv kubectl /usr/local/bin/
+
+### Connect Jenkins to EKS:
+  aws eks update-kubeconfig --region us-east-1 --name my-cluster
+
+### Deploy Kubernetes Resources:
+- Namespaces: `prod-main`, `prod-backup`
+- Deployments: Runs **Ubuntu-based** containers
+- Persistent Storage: PVC linked to **EBS**
+- Horizontal Pod Autoscaler (HPA): Scales pods at **70% memory usage**
+- Prometheus & Grafana: Monitoring & Alerts
+
+---
+
+## 4. Docker & ECR Integration
+
+### Configure AWS CLI for ECR:
+  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ECR_REPO>
+
+### Jenkins Pipeline Builds:
+- Pulls latest code from GitHub at **4 AM daily**
+- Runs tests and builds the Docker image
+- Pushes image to **Amazon ECR**
+- Updates Kubernetes deployment with the latest image
+
+---
+
+## 5. SonarQube Setup for Code Quality
+
+### Deploy SonarQube on the **Jenkins EC2 Instance**:
+  docker run -d --name sonarqube -p 9000:9000 sonarqube
+
+### Integrate SonarQube with Jenkins:
+- Install **SonarQube Scanner Plugin**
+- Configure Jenkins to run static code analysis
+
+### Run SonarQube Analysis:
+  mvn clean verify sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=http://localhost:9000 -Dsonar.login=<TOKEN>
+
+---
+
+## 6. Final Deployment & Testing
+
+### Verify Jenkins Pipeline:
+- Code checkout ✅
+- Run unit tests 
+- Build & push Docker image 
+- Deploy to Kubernetes 
+- Monitor with Prometheus & Grafana 
+
+### Validate Deployment:
+- `kubectl get pods -n prod-main`
+- `kubectl get services -n prod-main`
+- `kubectl logs <pod-name> -n prod-main`
+
+### Test Application:
+- Open **ALB Ingress URL** in the browser
+
+---
+
+## Everything is set up and running successfully!

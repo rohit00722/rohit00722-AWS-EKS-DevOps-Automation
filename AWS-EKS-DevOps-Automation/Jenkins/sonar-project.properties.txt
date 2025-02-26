@@ -1,0 +1,16 @@
+# SonarQube Configuration
+sonar.projectKey=your-project-key
+sonar.projectName=Your Project Name
+sonar.projectVersion=1.0
+
+# Source Code Information
+sonar.sources=.
+sonar.language=JavaScript   # Change this based on your project (Java, Python, etc.)
+sonar.sourceEncoding=UTF-8
+
+# Exclusions (if any)
+sonar.exclusions=**/node_modules/**, **/*.test.js  # Adjust based on your needs
+
+# SonarQube Server Details
+sonar.host.url=http://your-sonarqube-server:9000
+sonar.login=your-sonarqube-token   # Use a secure method for authentication

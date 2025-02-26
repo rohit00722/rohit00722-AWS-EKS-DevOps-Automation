@@ -1,0 +1,101 @@
+GITHUB
+├───docker_files
+│       Dockerfile
+│       README.txt
+│
+├───helm_charts
+│   │   README.md
+│   │
+│   └───charts
+│       ├───monitoring
+│       │   │   Chart.yaml
+│       │   │   values.yaml
+│       │   │
+│       │   └───templates
+│       │           grafana-deployment.yaml
+│       │
+│       └───my-app
+│           │   Chart.yaml
+│           │   values.yaml
+│           │
+│           └───templates
+│                   deployment.yaml
+│                   helpers.tpl
+│                   ingress.yaml
+│                   service.yaml
+│
+├───Jenkins
+│       pipeline-with-sonarqube.groovy
+│       Prerequisites.txt
+│       Readme.txt
+│       sonar-project.properties.txt
+│
+├───Kubernetes Files
+│   │   README.txt
+│   │
+│   ├───kubernetes
+│   │   ├───manifests
+│   │   │   ├───deployments
+│   │   │   │       prod-backup.yaml
+│   │   │   │       prod-main.yaml
+│   │   │   │
+│   │   │   └───services
+│   │   │           prod-backup.yaml
+│   │   │           prod-main.yaml
+│   │   │
+│   │   ├───monitoring
+│   │   │   ├───grafana
+│   │   │   └───prometheus
+│   │   ├───prod-backup
+│   │   │       configmap.yaml
+│   │   │       deployment.yaml
+│   │   │       hpa.yaml
+│   │   │       ingress.yaml
+│   │   │       namespace.yaml
+│   │   │       pv.yaml
+│   │   │       pvc.yaml
+│   │   │       secret.yaml
+│   │   │       service.yaml
+│   │   │
+│   │   └───prod-main
+│   │           configmap.yaml
+│   │           deployment.yaml
+│   │           hpa.yaml
+│   │           ingress.yaml
+│   │           namespace.yaml
+│   │           pv.yaml
+│   │           pvc.yaml
+│   │           secret.yaml
+│   │           service.yaml
+│   │
+│   └───scripts
+│           cleanup.sh
+│           deploy.sh
+│           setup-eks.sh
+│
+├───Terraform
+│   │   backend.tf
+│   │   main.tf
+│   │   outputs.tf
+│   │   provider.tf
+│   │   README.txt
+│   │   Terraform Prerequisites.txt
+│   │   terraform.tfvars
+│   │   variables.tf
+│   │
+│   └───Modules
+│       ├───ALB
+│       │       alb_main.tf
+│       │       alb_variables.tf
+│       │
+│       ├───EKS
+│       │       eks_variables.tf
+│       │       main.tf
+│       │
+│       └───VPC
+│               main.tf
+│               variables.tf
+│
+└───Documentation
+        Project_Manual.txt
+        .gitignore

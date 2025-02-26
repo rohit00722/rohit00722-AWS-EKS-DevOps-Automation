@@ -1,0 +1,39 @@
+# Terraform files
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+terraform.tfvars
+
+# Helm files
+charts/*/charts/
+charts/*/tmp/
+charts/*/Chart.lock
+
+# Kubernetes files
+kubernetes/.kube/
+kubernetes/kubeconfig
+
+# Logs and temporary files
+*.log
+*.out
+*.tmp
+*.swp
+
+# Ignore IDE and editor-specific files
+.vscode/
+.idea/
+*.iml
+.DS_Store
+
+# Ignore compiled binaries and caches
+node_modules/
+dist/
+build/
+*.pyc
+__pycache__/
+
+# Ignore Jenkins workspace and build artifacts
+Jenkins/workspace/
+Jenkins/jobs/
+Jenkins/logs/

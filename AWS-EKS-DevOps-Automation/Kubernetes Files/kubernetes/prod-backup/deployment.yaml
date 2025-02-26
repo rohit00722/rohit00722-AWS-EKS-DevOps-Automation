@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-backup-deployment
+  labels:
+    app: prod-backup
+spec:
+  replicas: 2  # Adjust as needed
+  selector:
+    matchLabels:
+      app: prod-backup
+  template:
+    metadata:
+      labels:
+        app: prod-backup
+    spec:
+      containers:
+        - name: prod-backup-container
+          image: my-backup-image:latest  # Replace with the correct image
+          ports:
+            - containerPort: 80
+          env:
+            - name: BACKUP_SCHEDULE
+              value: "0 2 * * *"  # Example: Runs backup daily at 2 AM
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"

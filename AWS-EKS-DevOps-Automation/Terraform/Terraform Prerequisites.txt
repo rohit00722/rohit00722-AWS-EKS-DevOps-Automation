@@ -1,0 +1,55 @@
+Terraform Pre-requisites for Kubernetes Deployment
+
+Before running Terraform to provision AWS infrastructure for the Kubernetes deployment, ensure the following pre-requisites are met:
+
+1. **System Requirements:**
+   - Operating System: Linux/MacOS/Windows
+   - Minimum 8GB RAM and 4 vCPU recommended
+
+2. **Installed Software:**
+   - [ ] Terraform (latest version) - Install from: https://developer.hashicorp.com/terraform/downloads
+   - [ ] AWS CLI - Install from: https://aws.amazon.com/cli/
+   - [ ] kubectl - Install from: https://kubernetes.io/docs/tasks/tools/install-kubectl/
+   - [ ] Helm - Install from: https://helm.sh/docs/intro/install/
+
+3. **AWS Account Setup:**
+   - [ ] An active AWS account
+   - [ ] IAM user with AdministratorAccess or necessary permissions
+   - [ ] Configure AWS CLI using `aws configure` with Access Key, Secret Key, Region
+
+4. **Terraform State Management Configuration:**
+   - Ensure an S3 bucket is available for remote backend storage
+   - Ensure a DynamoDB table is created for state locking
+   - Example setup:
+     ```sh
+     aws s3api create-bucket --bucket my-terraform-state --region us-east-1
+     aws dynamodb create-table --table-name terraform-lock \
+       --attribute-definitions AttributeName=LockID,AttributeType=S \
+       --key-schema AttributeName=LockID,KeyType=HASH \
+       --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1
+     ```
+
+5. **IAM Role and Policies for EKS:**
+   - Create an IAM role for EKS with necessary permissions
+   - Attach `AmazonEKSClusterPolicy`, `AmazonEKSWorkerNodePolicy`, `AmazonEC2ContainerRegistryReadOnly`, and `AmazonEKS_CNI_Policy` to the role
+   
+6. **Key Pair for EC2 Instances (Optional, if required):**
+   - Generate an SSH key pair:
+     ```sh
+     ssh-keygen -t rsa -b 4096 -C "your-email@example.com"
+     ```
+   - Upload public key to AWS EC2
+
+7. **Networking Considerations:**
+   - Ensure that the VPC CIDR range does not overlap with existing infrastructure
+   - Security groups allow traffic for EKS nodes and ALB
+   - Internet Gateway and NAT Gateway configured properly
+
+8. **Verify AWS Permissions:**
+   - Ensure the IAM user or role has necessary permissions:
+     ```sh
+     aws iam list-policies | grep 'AdministratorAccess'
+     ```
+
+By ensuring these pre-requisites are met, you can successfully deploy the infrastructure using Terraform without errors.
+
